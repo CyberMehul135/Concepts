@@ -1,15 +1,10 @@
 // Mock Interview Questions
 
-//! [ 1 ] Closure definition and example
+//! [ 1 ] Closure
 
-// Definition : Closure is a feature in javascript where inner-function can access variables of it's outer-function,
-//              event after outer-function execution is finished.
+//? Example - 1 :
+//? ( a ) Result : 1,2,3. Becasue : we are calling outer-function one-time
 
-// Simple Explanation : In Simple words,
-//                      When a function remembers the variables of it's parent-function, that is called closure.
-
-// Code example :
-// Example - 1 : Result : 1,2,3. Becasue : we are calling outer-function one-time
 // function outerFunction() {
 //   let count = 0;
 
@@ -27,7 +22,8 @@
 // count();
 // count();
 
-// Example - 2 : Result : 1,1,1. Becasue : we are calling outer-function every-time
+//? ( b ) Result : 1,1,1. Becasue : we are calling outer-function every-time
+
 // function outerFunction() {
 //   let count = 0;
 
@@ -43,7 +39,8 @@
 // outerFunction()();
 // outerFunction()();
 
-// Real-life Code Example :
+//? Example - 2 : Real-life Code Example :
+
 // function bankAccount() {
 //   let balance = 1000;
 
@@ -56,6 +53,9 @@
 //       balance -= amount;
 //       console.log("Balance:", balance);
 //     },
+//     getBalance() {
+//       return balance; // copy return not actual state
+//     },
 //   };
 // }
 
@@ -63,30 +63,11 @@
 
 // account.deposit(500); // Balance: 1500
 // account.withdraw(300); // Balance: 1200
-
-// function bankAccount() {
-//   let balance = 1000;
-
-//   return {
-//     deposite(amount) {
-//       balance += amount;
-//       console.log(balance);
-//     },
-//     withdraw(amount) {
-//       balance -= amount;
-//       console.log(balance);
-//     },
-//   };
-// }
-
-// const account = bankAccount();
-
-// account.deposite(1000);
-// account.withdraw(700);
+// console.log(account.getBalance());
 
 //! [ 2 ] Promise : ( 2 Parts of promise )
 
-//  1] Simple Example
+//? Example - 1 :
 // const myPromise = new Promise((resolve, reject) => {
 //   let result = false;
 
@@ -105,7 +86,7 @@
 //     console.log(err);
 //   });
 
-// 2]
+//? Example - 2 :
 // function orderFood() {
 //   return new Promise((resolve, reject) => {
 //     let restaurantOpen = true;
@@ -155,3 +136,40 @@
 // console.log(sum(5));
 // console.log(sum(15));
 // console.log(sum(15));
+
+//! [ 7 ] Promise Methods
+
+// const p1 = Promise.resolve(10);
+// const p2 = Promise.reject("Error");
+// const p3 = Promise.resolve(12);
+
+// Promise.any([p1, p2, p3])
+//   .then((result) => console.log(result))
+//   .catch((err) => console.log(err));
+
+// const p1 = new Promise((resolve, reject) =>
+//   setTimeout(() => reject("Success 1"), 1000),
+// );
+
+// const p2 = new Promise((resolve) =>
+//   setTimeout(() => resolve("Success 2"), 2000),
+// );
+
+// Promise.race([p1, p2])
+//   .then((result) => console.log(result))
+//   .catch((error) => console.log(error));
+
+// const p1 = new Promise((resolve, reject) => {
+//   setTimeout(() => resolve(console.log("Resolve ho gaya 1")), 2000);
+// });
+// const p2 = new Promise((resolve, reject) => {
+//   setTimeout(() => reject(console.log("Resolve ho gaya 2")), 1000);
+// });
+
+// Promise.race([p1, p2])
+//   .then((result) => console.log("result : ", result))
+//   .catch((error) => console.log("error : ", error));
+
+// console.log(p1);
+// console.log(p2);
+

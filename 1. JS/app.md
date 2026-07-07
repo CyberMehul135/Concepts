@@ -435,6 +435,30 @@ const Child = React.memo(({ name }) => {
 - Instead of writing same code in many components,<br>
   we wrap components with an HOC
 
+### Example :
+
+```
+import React from "react";
+
+function withAuth(WrappedComponent) {
+  return function AuthComponent(props) {
+    const isLoggedIn = true;
+
+    if (!isLoggedIn) {
+      return <h2>Please login</h2>;
+    }
+
+    return <WrappedComponent {...props} />;
+  };
+}
+
+function Dashboard() {
+  return <h2>Dashboard Page</h2>;
+}
+
+export default withAuth(Dashboard);
+```
+
 ### **Followup Questions** :
 
 ### FQ - 1 : Why do we use HOC ?
@@ -522,7 +546,7 @@ console.log(sum(5)); // 15 (from cache)
    .catch((error) => console.log(error));
 ```
 
-**2 ] Promise.race()** : ( **Usecase** : Timeout Handling )
+**2 ] Promise.any()** : ( **Usecase** : Timeout Handling )
 
 - The Promise that complete first ( resolve / reject ), get its result
 
@@ -541,7 +565,7 @@ console.log(sum(5)); // 15 (from cache)
 
   ```
 
-**3 ] Promise.any()**
+**3 ] Promise.race()**
 
 - The Promise that resolve first ( resolve ), get its result
 
@@ -554,7 +578,7 @@ console.log(sum(5)); // 15 (from cache)
   setTimeout(() => resolve("Success 2"), 2000)
   );
 
-  Promise.any([p1, p2])
+  Promise.race([p1, p2])
   .then(result => console.log(result))
   .catch(error => console.log(error));
 
@@ -570,3 +594,291 @@ console.log(sum(5)); // 15 (from cache)
 
 - Promise.all() fails if any promise fails.
 - Promise.allSettled always returns of all promises
+
+### FQ - 2 : When do we use Promise.race() ?
+
+- When we need fastest response, like API timeout
+
+### FQ - 3 : Which Promise method never fails fast ?
+
+- Promise.allSettled()
+
+## ( 8 ) Async / Await
+
+### **Definition** :
+
+- Async Await is a Javascript syntax, <br/> which is used to handle promises in a synchronous looking way.
+
+### **Simple Explanation** :
+
+- async await makes asynchronous code easy read & understand
+- It allows us to write promise based code without using .then() & .catch() chains.
+
+### **Example** :
+
+```
+const getProducts = async () => {
+    try {
+        const res = await fetch('https://dummyjson.com/products?delay=1000');
+        const data = await res.json()
+        console.log(data)
+        return data
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+getProducts()
+```
+
+### **Followup Questions** :
+
+### FQ - 1 : What does async keyword do?
+
+- It makes a function that always return a promise.
+
+### FQ - 2 : Can we use await without async?
+
+- No, await can be used only inside async function
+- Exceptions : <br/>
+  (1) JS : < script type="module"> <br/>
+  (2) Nodejs : change file extension = .js to .mjs
+
+### FQ - 3 : Difference between async/await and .then()?
+
+- async await makes code more redable & easy to debug compare to .then() chains.
+
+## ( 9 ) Event Loop
+
+### **Definition** :
+
+- The Event Loop is a JavaScript machanism <br/>
+  that allows JavaScript to perform non-blocking asynchronous operations even though JavaScript is single-threded.
+
+### **Simple Explanation** :
+
+- JavaScript can do only one task at a time because it is single-threaded.
+
+- But sometimes a task takes time, like:
+  - Fetching data from an API
+  - Waiting for a timer (setTimeout)
+  - Reading a file
+
+- If JavaScript waited for these tasks to finish, the whole application would freeze.
+
+- So JavaScript sends these long-running tasks to the browser (or Node.js). When they finish, they are placed in a queue.
+
+- The Event Loop checks:
+  - "Is the Call Stack empty?"
+  - If yes, it takes the next task from the queue and puts it into the Call Stack.
+
+- This process keeps the application responsive.
+
+### **Example** :
+
+1 ]
+
+```
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Inside setTimeout");
+}, 2000);
+
+console.log("End");
+```
+
+Output
+
+```
+Start
+End
+Inside setTimeout
+```
+
+2 ]
+
+```
+console.log("A");
+
+setTimeout(() => {
+    console.log("B");
+}, 0);
+
+console.log("C");
+```
+
+Output
+
+```
+A
+C
+B
+```
+
+### **Followup Questions** :
+
+### FQ - 1 : Is JavaScript single-threaded?
+
+- Yes. JavaScript is single-threaded because it has only one Call Stack and executes one task at a time.
+
+### FQ - 2 : Why do we need the Event Loop?
+
+- We need the Event Loop to handle asynchronous tasks without blocking the execution of synchronous code.
+
+### FQ - 3 : Does setTimeout(0) execute immediately?
+
+- No. It first goes to the Callback Queue, and the Event Loop executes it only after the Call Stack becomes empty.
+
+### FQ - 4 : Who executes asynchronous tasks?
+
+- The browser's Web APIs (or Node.js APIs) handle asynchronous tasks. The Event Loop only moves completed callbacks to the Call Stack.
+
+## ( 10 ) Hoisting
+
+### **Definition** :
+
+- Hoisting is JavaScript's behavior <br>where variable and function declarations are moved to the top of their scope before the code is executed.
+
+- However, only the declaration is hoisted, not the initialization (value assignment).
+
+### **Simple Explanation** :
+
+- Before JavaScript starts executing your code, it first scans the code and remembers all variable and function declarations.
+
+- You can think of it like this:
+  - Declaration → JavaScript knows the variable or function exists.
+  - Initialization → The value is assigned later when that line executes.
+
+- That's why we say:
+  - Declarations are hoisted, but initializations are not.
+
+### **Example** :
+
+1 ] Variables - var, let, const
+
+( I ) Var
+
+```
+console.log(name);
+
+var name = "Mehul";
+```
+
+- Output
+
+```
+undefined
+```
+
+- Why? Js Internally Treats it like this
+
+```
+var name;          // Declaration is hoisted
+
+console.log(name); // undefined
+
+name = "Mehul";    // Initialization happens here
+```
+
+( II ) let, Const
+
+```
+console.log(age);
+
+let age = 25;
+```
+
+- Output
+
+```
+ReferenceError: Cannot access 'age' before initialization
+```
+
+- Why?
+  - let is also hoisted, but it stays in a special phase called the Temporal Dead Zone (TDZ) until its declaration line is executed.
+
+  - So you cannot access it before initialization.
+
+2 ] Functions
+
+( I ) Function Declaration
+
+```
+greet();
+
+function greet() {
+    console.log("Hello");
+}
+```
+
+- Output
+
+```
+Hello
+```
+
+- Why?
+  - Function declarations are fully hoisted, so you can call them before they are written in the code.
+  - JavaScript treats it like this:
+
+```
+function greet() {
+  console.log("Hello");
+}
+
+greet();
+```
+
+( II ) Function Expression
+
+```
+greet();
+
+var greet = function () {
+    console.log("Hello");
+};
+```
+
+- Output
+
+```
+TypeError: greet is not a function
+```
+
+- Why?
+  - Only the variable declaration is hoisted:
+
+```
+var greet;
+
+greet(); // greet is undefined
+
+greet = function () {
+    console.log("Hello");
+};
+```
+
+- Since greet is undefined at the time of the call, JavaScript cannot execute it as a function.
+
+### **Followup Questions** :
+
+### FQ - 1 : What is hoisted in JavaScript?
+
+- Variable declarations and function declarations are hoisted. Initializations are not.
+
+### FQ - 2 : Is let hoisted?
+
+- Yes. let is hoisted, but it cannot be accessed before initialization because of the Temporal Dead Zone (TDZ).
+
+### FQ - 3 : Is const hoisted?
+
+- Yes. Like let, const is hoisted but stays in the Temporal Dead Zone until its declaration is executed.
+
+### FQ - 4 : Which function is fully hoisted?
+
+- Only function declarations are fully hoisted.
+
+### FQ - 5 : Why does var return undefined instead of an error?
+
+- Because during hoisting, var is automatically initialized with undefined.
